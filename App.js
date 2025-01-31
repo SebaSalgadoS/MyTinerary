@@ -1,12 +1,19 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import HeroComponent from './src/components/Hero/index'
+import CountryCarrousel from './src/components/Carrousel/index'
 
 export default function App() {
+
+  const titleHero = "MyTinerary"
+  const subtitleHero = "Find your perfect travel itinerary"
   return (
-    <View style={styles.container}>
-      <Text>MyTinerary</Text>
-      <StatusBar style="auto" />
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        <HeroComponent title={titleHero} subtitle={subtitleHero}></HeroComponent>
+        <CountryCarrousel/>
+      </View>
+    </ScrollView>
   );
 }
 
@@ -15,6 +22,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    marginTop: 100
   },
 });
