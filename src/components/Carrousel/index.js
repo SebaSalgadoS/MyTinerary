@@ -87,7 +87,7 @@ const countryStyles = StyleSheet.create({
       marginTop: 10
     },
     img: {
-        width: 200,
-        height: 100,
+        width: 300,
+        height: 200,
     }
   });
