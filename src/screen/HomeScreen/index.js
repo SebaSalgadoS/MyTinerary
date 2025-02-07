@@ -1,9 +1,9 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import HeroComponent from './src/screen/HomeScreen/Hero/index'
-import CountryCarrousel from './src/screen/HomeScreen/Carrousel/index'
+import HeroComponent from './Hero/index'
+import CountryCarrousel from './Carrousel/index'
 
-export default function App() {
+export default function HomeScreen() {
 
   const titleHero = "MyTinerary"
   const subtitleHero = "Find your perfect travel itinerary"
