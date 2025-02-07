@@ -67,7 +67,9 @@ export default function CountryCarrousel(){
             loop
             scrollAnimationDuration={1000}
             renderItem={({item}) => {
-                return <Item name={item.name} url={item.url}/>
+                return (
+                     <Item name={item.name} url={item.url}/>
+                )
             }}
         >
         </Carrousel>
