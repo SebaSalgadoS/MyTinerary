@@ -51,17 +51,17 @@ const DATA = [
 
 const Item = ({name, url}) => (
     <View style={countryStyles.container}>
-      <Text style={countryStyles.nameText}>{name}</Text>
       <Image style={countryStyles.img} source={{uri:url}}/>
+      <Text style={countryStyles.nameText}>{name}</Text>
     </View>
   );
 
 export default function CountryCarrousel(){
-    const width = Dimensions.get('window').width;
+    const width = Dimensions.get('screen').width;
     return(
         <Carrousel
             width={width}
-            height={width / 2}
+            height={width }
             autoPlay={true}
             data={DATA}
             loop
@@ -83,13 +83,17 @@ const countryStyles = StyleSheet.create({
       color:'orange'
     },
     container: {
-      flex: 1,
+      flex: 'colum',
       backgroundColor: '#fff',
       alignItems: 'center',
-      marginTop: 10
+      marginTop: 10,
+      marginBottom: 10
     },
     img: {
-        width: 300,
+        width: 200,
         height: 200,
+        borderRadius: 150, // La mitad del ancho/alto para hacerlo circular
+        overflow: 'hidden',
+        marginTop: 30
     }
   });
