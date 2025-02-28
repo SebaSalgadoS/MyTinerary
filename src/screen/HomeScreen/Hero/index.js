@@ -1,4 +1,4 @@
-import { Text, View, Button, StyleSheet} from 'react-native';
+import { Text, View, Button, StyleSheet, Image} from 'react-native';
 
 export default function HeroComponen({title, subtitle}){
   return (
