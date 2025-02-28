@@ -1,16 +1,16 @@
 import axios from "axios";
-import { userMapper } from "./user.mapper";
-import storage from "../utils/storage";
-const URL = "https://mytinerary-server.onrender.com/api"
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import storage from "../../utils/storage";
 
-const login = async ({ email, password }) => {
+const API_URL = "https://mytinerary-server.onrender.com/api/auth";
+
+const loginUser = async ({ email, password }) => {
   try {
-    const { data } = await axios.post(URL + "/auth/login", { email, password });
-    const user = userMapper(data.data);
-    storage.setItem({ key: "token", value: user.token });
-    return user;
-  } catch (e) {
-    console.log(e);
+    const response = await axios.post(API_URL + "/login", { email, password });
+    storage.setItem({ key: "token", value: response.token });
+    return response.data;
+  } catch (error) {
+    console.error("Error login:", error.response?.data || error.message);
     return null;
   }
 };
@@ -18,22 +18,53 @@ const login = async ({ email, password }) => {
 const loginWithToken = async (token) => {
   try {
     const { data } = await axios.post(
-      URL + "/auth/token",
+      API_URL + "/token",
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    return data.data
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const registerUser = async (userData) => {
+  try {
+    const response = await axios.post(`${API_URL}/register`, userData);
+    return response.data;
+  } catch (error) {
+    console.error("Error register:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+const validateToken = async () => {
+  try {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) throw new Error("No token stored");
+
+    const response = await axios.post(
+      `${API_URL}/token`,
       {},
       {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
-    return userMapper(data.data);
-  } catch (e) {
-    console.log(e);
-    return null;
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error validation token:",
+      error.response?.data || error.message
+    );
+    throw error;
   }
 };
 
 export default {
-  login,
+  loginUser,
   loginWithToken,
+  registerUser,
+  validateToken,
 };

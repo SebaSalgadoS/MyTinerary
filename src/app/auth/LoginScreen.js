@@ -9,23 +9,29 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {authReducer} from "../../store/reducer/authReducer"
-import {setUser} from "../../slice/authSlice"
+import { authReducer } from "../../store/reducer/authReducer";
+import { setUser } from "../../slice/authSlice";
 import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { loginUser } from "../../services/login/user.services";
+import AuthServices from "../../services/login/user.services";
+import useUser from "../../hooks/useUserActions";
 
 const LoginSchema = z.object({
   email: z
     .string({ required_error: "The field is required" })
-    .email({ message: "Please enter a valid email address" }).min(10, "Minimun 10 characters").max(30,"Maximun 30 characters"),
+    .email({ message: "Please enter a valid email address" })
+    .min(10, "Minimun 10 characters")
+    .max(30, "Maximun 30 characters"),
   password: z
     .string({ required_error: "The field is required" })
-    .min(6, "It must have at least 6 characters")
+    .min(6, "It must have at least 6 characters"),
 });
 
 export default function LoginScreen() {
-
+  const { login } = useUser();
+  const router = useRouter();
   const dispatch = useDispatch();
   const {
     control,
@@ -36,31 +42,13 @@ export default function LoginScreen() {
   });
 
   const handleLogin = async (data) => {
-  
     console.log(JSON.stringify(data));
 
-    setLoading(true);
-    try {
-      const response = await axios.post("https://mytinerary-server.onrender.com/api/auth/login", data);
-      console.log(JSON.stringify(response.data));
-      if (response.data.success) {
-        const { token, ...userData } = response.data.response;
-        await AsyncStorage.setItem("token", token);
-        dispatch(setUser(userData)); 
-        Alert.alert("Éxito", "Inicio de sesión exitoso");
-        router.replace("(tabs)");
-      } else {
-        Alert.alert("Error", response.data.message || "Credenciales incorrectas");
-      }
-
-    } catch (error) {
-      console.error("Error en login:", error);
-    } finally {
-      setLoading(false);
-    }
+    AuthServices.loginUser(data).then((res) => {
+      login(res);
+      router.replace("(tabs)");
+    });
   };
-
-  const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -110,7 +98,10 @@ export default function LoginScreen() {
         )}
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit(handleLogin)}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handleSubmit(handleLogin)}
+      >
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => router.push("/auth/RegisterScreen")}>
@@ -118,7 +109,7 @@ export default function LoginScreen() {
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
