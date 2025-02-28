@@ -10,6 +10,7 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {authReducer} from "../../store/reducer/authReducer"
+import {setUser} from "../../slice/authSlice"
 import { useRouter } from "expo-router";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -41,13 +42,11 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       const response = await axios.post("https://mytinerary-server.onrender.com/api/auth/login", data);
-
       console.log(JSON.stringify(response.data));
-      console.log(JSON.stringify(response.data.token));
       if (response.data.success) {
         const { token, ...userData } = response.data.response;
         await AsyncStorage.setItem("token", token);
-        dispatch(authReducer(userData)); 
+        dispatch(setUser(userData)); 
         Alert.alert("Éxito", "Inicio de sesión exitoso");
         router.replace("(tabs)");
       } else {

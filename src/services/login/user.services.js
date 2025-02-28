@@ -2,6 +2,7 @@ import axios from "axios";
 import { userMapper } from "./user.mapper";
 import storage from "../utils/storage";
 const URL = "https://mytinerary-server.onrender.com/api"
+
 const login = async ({ email, password }) => {
   try {
     const { data } = await axios.post(URL + "/auth/login", { email, password });
@@ -14,7 +15,7 @@ const login = async ({ email, password }) => {
   }
 };
 
-const loginWithToken = async (token: string) => {
+const loginWithToken = async (token) => {
   try {
     const { data } = await axios.post(
       URL + "/auth/token",
