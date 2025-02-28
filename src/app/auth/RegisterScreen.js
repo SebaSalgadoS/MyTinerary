@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import * as z from "zod";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { registerUser } from "../../services/login/user.services";
 
 const registerSchema = z.object({
   first_name: z
@@ -49,15 +50,6 @@ export default function RegisterScreen() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const saveToken = async (token) => {
-    try {
-      await AsyncStorage.setItem("userToken", token);
-      console.log("✅ Token guardado con éxito");
-    } catch (error) {
-      console.error("❌ Error guardando el token:", error);
-    }
-  };
-
   const {
     control,
     handleSubmit,
@@ -88,18 +80,9 @@ export default function RegisterScreen() {
       );
 
       console.log(JSON.stringify(response.data));
-      console.log("TOKEN " + JSON.stringify(response.data.token));
       if (response.data.status === 201) {
-        const { token, ...userData } = response.data.response; // Extrae el token y los datos del usuario
-        try {
-          await AsyncStorage.setItem("token", token); // Almacena el token en AsyncStorage
-          dispatch(setUser(userData)); // Almacena los datos del usuario en Redux (opcional)
-          Alert.alert("Success", "User registered successfully");
-          router.push("/auth/LoginScreen");
-        } catch (error) {
-          console.error("Error storing token:", error);
-          Alert.alert("Error", "Failed to store token.");
-        }
+        Alert.alert("Success", "User registered successfully");
+        router.replace("/auth/LoginScreen");
       } else {
         Alert.alert(
           "Error",
